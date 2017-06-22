@@ -25,14 +25,23 @@ import java.util.Properties;
 @EnableTransactionManagement
 public class DatabaseConfig {
 
+//    @Bean
+//    public DataSource getDataSource() {
+//
+//        final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
+//        dsLookup.setResourceRef(true);
+//
+//        return dsLookup.getDataSource("jdbc/MyTestDS");
+//
+//    }
     @Bean
-    public DataSource getDataSource() {
-
-        final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
-        dsLookup.setResourceRef(true);
-
-        return dsLookup.getDataSource("jdbc/MyTestDS");
-
+    public DriverManagerDataSource getDataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/mytestdb");
+        dataSource.setUsername("myuser");
+        dataSource.setPassword("password");
+        return dataSource;
     }
 
     @Bean

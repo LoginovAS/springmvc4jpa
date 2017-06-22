@@ -2,6 +2,7 @@ package org.sbx.web.config;
 
 import org.sbx.app.config.DatabaseConfig;
 import org.springframework.web.WebApplicationInitializer;
+import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
@@ -14,17 +15,20 @@ import javax.servlet.ServletRegistration;
  */
 public class CustomerWebAppIntializer implements WebApplicationInitializer {
     @Override
-    public void onStartup(ServletContext servletContext) throws ServletException {
+    public void onStartup(ServletContext container) throws ServletException {
 
         AnnotationConfigWebApplicationContext webContext = new AnnotationConfigWebApplicationContext();
 
-        webContext.register(DatabaseConfig.class);
-        webContext.register(CustomerWebMVCConfig.class);
-        webContext.setServletContext(servletContext);
-        ServletRegistration.Dynamic reg = servletContext.addServlet("dispatcherServlet", new DispatcherServlet(webContext));
+        webContext.register(CustomerWebMVCConfig.class, DatabaseConfig.class);
 
-        reg.setLoadOnStartup(1);
-        reg.addMapping("*.action");
+        container.addListener(new ContextLoaderListener(webContext));
+
+        webContext.setServletContext(container);
+
+        ServletRegistration.Dynamic dispatcher = container.addServlet("dispatcher", new DispatcherServlet(webContext));
+
+        dispatcher.setLoadOnStartup(1);
+        dispatcher.addMapping("*.action");
 
     }
 }
