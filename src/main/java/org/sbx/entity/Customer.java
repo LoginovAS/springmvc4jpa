@@ -3,24 +3,26 @@ package org.sbx.entity;
 import javax.persistence.*;
 import java.util.Date;
 
-/**
- * Created by loginov_a_s on 20.06.2017.
- */
-
 @Entity
 @Table(name = "customers")
 public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "customer_id")
     private long customerId;
+
+    @Column(name = "customer_name")
     private String customerName;
+
     private String country;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_date")
     private Date createdDate;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "update_date")
     private Date updateDate;
 
     public long getCustomerId() {

@@ -8,13 +8,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-/**
- * Created by loginov_a_s on 20.06.2017.
- */
 
 @Controller
 @RequestMapping("/customer")
@@ -51,6 +51,54 @@ public class CustomerController {
 
     }
 
-    
+    @RequestMapping(value = "/editCustomer", method = RequestMethod.POST)
+    public ModelAndView editCustomer(HttpServletRequest request, HttpServletResponse response) {
+
+        ModelAndView model = new ModelAndView();
+        model.setViewName("customers");
+
+        String customerId = request.getParameter("customerId");
+        String name = request.getParameter("name");
+        String country = request.getParameter("country");
+
+        Customer customer = customerService.updateCustomer(Long.parseLong(customerId), name, country);
+
+        if (customer != null) {
+            model.addObject("saveSuccess", "Customer added successfully: " + customer.getCustomerName());
+        } else {
+            model.addObject("saveError", "Customer creation failed");
+        }
+
+        List<Customer> list = customerService.getAllCustomers();
+
+        model.addObject("customers", list);
+
+        return model;
+
+    }
+
+    @RequestMapping(value = "/addCustomer", method = RequestMethod.POST)
+    public ModelAndView addCustomer(HttpServletRequest request, HttpServletResponse response) {
+
+        ModelAndView model = new ModelAndView();
+        model.setViewName("customers");
+        String name = request.getParameter("name");
+        String country = request.getParameter("country");
+
+        Customer customer = customerService.addCustomer(name, country);
+
+        if (customer != null) {
+            model.addObject("saveSuccess", "Customer added successfully: " + customer.getCustomerName());
+        } else {
+            model.addObject("saveError", "Customer creation failed");
+        }
+
+        List<Customer> list = customerService.getAllCustomers();
+
+        model.addObject("customers", list);
+
+        return model;
+
+    }
 
 }

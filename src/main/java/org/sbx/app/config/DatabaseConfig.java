@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -14,11 +15,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
 import java.util.Properties;
 
-/**
- * Created by loginov_a_s on 20.06.2017.
- */
+
 
 @Configuration
 @ComponentScan(basePackages = {"org.sbx.services", "org.sbx.dao"})
@@ -26,15 +26,12 @@ import java.util.Properties;
 public class DatabaseConfig {
 
     @Bean
-    public DriverManagerDataSource getDataSource() {
+    public DataSource getDataSource() {
 
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/javasavvy");
-        dataSource.setUsername("myuser");
-        dataSource.setPassword("testpassword");
+        final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
+        dsLookup.setResourceRef(true);
 
-        return dataSource;
+        return dsLookup.getDataSource("jdbc/MyTestDS");
 
     }
 
